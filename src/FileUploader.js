@@ -24,15 +24,20 @@ class FileUploader extends React.Component {
                 this.props.onFileLoad({file, uploadId});
             }
         };
-        this.onUpload = (params) => {
-            const uploadId = params.uploadId;
+
+        this.onUpload = (params, done) => {
             if (this.props.onUpload) {
-                this.props.onUpload(params, () => {
-                    const {files, percents} = this.state;
-                    delete files[uploadId];
-                    delete percents[uploadId];
-                    this.setState(files);
-                });
+                this.props.onUpload(params, done);
+            }
+        };
+
+        this.onFileUploaded = (uploadId) => {
+            const {files, percents} = this.state;
+            delete files[uploadId];
+            delete percents[uploadId];
+            this.setState(files);
+            if (this.props.onFileUploaded) {
+                this.props.onFileUploaded(uploadId);
             }
         };
     }
@@ -44,13 +49,14 @@ class FileUploader extends React.Component {
             const percent = percents[uploadId] || 0;
             return {file, percent, uploadId};
         });
-        const props = _.omit(this.props, 'onFileLoad', 'onFileUploaded', 'onProgress');
+        const props = _.omit(this.props, ['onFileLoad', 'onFileUploaded', 'onProgress']);
         props.label = props.label || 'Add File';
         return (
             <div>
                 <UploadInput
                     onFileLoad={this.onFileLoad}
                     onUpload={this.onUpload}
+                    onFileUploaded={this.onFileUploaded}
                     onProgress={this.onProgress}
                     {...props}
                 />

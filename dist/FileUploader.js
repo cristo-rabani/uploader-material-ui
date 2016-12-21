@@ -74,18 +74,23 @@ var FileUploader = function (_React$Component) {
                 _this.props.onFileLoad({ file: file, uploadId: uploadId });
             }
         };
-        _this.onUpload = function (params) {
-            var uploadId = params.uploadId;
-            if (_this.props.onUpload) {
-                _this.props.onUpload(params, function () {
-                    var _this$state = _this.state,
-                        files = _this$state.files,
-                        percents = _this$state.percents;
 
-                    delete files[uploadId];
-                    delete percents[uploadId];
-                    _this.setState(files);
-                });
+        _this.onUpload = function (params, done) {
+            if (_this.props.onUpload) {
+                _this.props.onUpload(params, done);
+            }
+        };
+
+        _this.onFileUploaded = function (uploadId) {
+            var _this$state = _this.state,
+                files = _this$state.files,
+                percents = _this$state.percents;
+
+            delete files[uploadId];
+            delete percents[uploadId];
+            _this.setState(files);
+            if (_this.props.onFileUploaded) {
+                _this.props.onFileUploaded(uploadId);
             }
         };
         return _this;
@@ -103,7 +108,7 @@ var FileUploader = function (_React$Component) {
             var percent = percents[uploadId] || 0;
             return { file: file, percent: percent, uploadId: uploadId };
         });
-        var props = _lodash2.default.omit(this.props, 'onFileLoad', 'onFileUploaded', 'onProgress');
+        var props = _lodash2.default.omit(this.props, ['onFileLoad', 'onFileUploaded', 'onProgress']);
         props.label = props.label || 'Add File';
         return _react2.default.createElement(
             'div',
@@ -111,6 +116,7 @@ var FileUploader = function (_React$Component) {
             _react2.default.createElement(_UploadInput2.default, (0, _extends3.default)({
                 onFileLoad: this.onFileLoad,
                 onUpload: this.onUpload,
+                onFileUploaded: this.onFileUploaded,
                 onProgress: this.onProgress
             }, props)),
             _react2.default.createElement(_FilesInProgress2.default, { files: filesArr })

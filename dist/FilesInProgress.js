@@ -37,13 +37,15 @@ var FilesInProgress = exports.FilesInProgress = function FilesInProgress(_ref) {
             uploadId = _ref2.uploadId;
 
         if (file && imageRegExp.test(file.type)) {
-            return _react2.default.createElement(_List.ListItem, { key: uploadId,
+            return _react2.default.createElement(_List.ListItem, {
+                key: uploadId,
                 leftAvatar: _react2.default.createElement(_reactFileImage2.default, { file: file, height: height }),
                 primaryText: file.name || 'File',
                 secondaryText: percent && _react2.default.createElement(_LinearProgress2.default, { mode: 'determinate', value: percent })
             });
         }
-        return _react2.default.createElement(_List.ListItem, { key: uploadId,
+        return _react2.default.createElement(_List.ListItem, {
+            key: uploadId,
             leftAvatar: _react2.default.createElement(Icon, { type: file.type, name: file.name }),
             primaryText: file.name || 'File',
             secondaryText: percent && _react2.default.createElement(_LinearProgress2.default, { mode: 'determinate', value: percent })

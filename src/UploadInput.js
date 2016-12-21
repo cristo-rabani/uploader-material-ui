@@ -1,10 +1,9 @@
 import React from 'react';
-import sdk from 'meteor/vazco:services-sdk-integration';
 import FlatButton from 'material-ui/FlatButton';
 import {Random} from 'meteor/random';
-import {filter} from 'lodash';
+import _ from 'lodash';
 
-const EXCLUSIVE_Props = [
+const exclusiveProps = [
     'fileTypeRegex',
     'onChange',
     'onFileUploaded',
@@ -33,11 +32,10 @@ export class UploadInputComponent extends React.Component {
 
     constructor (props) {
         super(props);
-        this.filesService = sdk.getService('files');
         this.onInputChange = (e) => {
-            const {onFileLoad, onFileUploaded, onError, onProgress, onUpload} = this.props;
+            const {onFileLoad, onFileUploaded, onProgress, onUpload} = this.props;
 
-            filter(
+            _.filter(
                 e.target.files,
                 (file) => file.type.match(this.props.fileTypeRegex) !== null
             ).forEach(file => {
@@ -47,7 +45,10 @@ export class UploadInputComponent extends React.Component {
                     const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
                     onProgress({percent, uploadId});
                 };
-                onUpload(Object.assign(this.getControlProps(), {file, uploadId, onProgress: onUploadProgress}));
+                onUpload(
+                    Object.assign(this.getControlProps(), {file, uploadId, onProgress: onUploadProgress}),
+                    () => onFileUploaded(uploadId)
+                );
             });
         };
 
@@ -57,7 +58,7 @@ export class UploadInputComponent extends React.Component {
         return Object
             .keys(this.props)
             .filter(
-                (name) => EXCLUSIVE_Props.indexOf(name) === -1
+                (name) => exclusiveProps.indexOf(name) === -1
             )
             .reduce(
                 (acc, name) => {
@@ -92,13 +93,14 @@ export class UploadInputComponent extends React.Component {
     render () {
         const props = this.getControlProps();
         return (
-            <div className='Container'>
+            <div className="Container">
                 <FlatButton
                     containerElement={'label'}
-                    className='Control'
-                    {...this.getButtonProps()}>
+                    className="Control"
+                    {...this.getButtonProps()}
+                >
                     <input
-                        className='FileInput'
+                        className="FileInput"
                         type="file"
                         ref="file-input"
                         onChange={this.onInputChange}
@@ -111,10 +113,15 @@ export class UploadInputComponent extends React.Component {
 
 }
 
+UploadInputComponent.propTypes = {
+    onUpload: React.PropTypes.func.isRequired,
+    name: React.PropTypes.string.isRequired
+};
+
 UploadInputComponent.defaultProps = {
     fileTypeRegex: /.*/,
     onFileLoad: () => undefined,
-    onUpload: () => undefined,
+    onFileUploaded: () => undefined,
     onProgress: () => undefined,
     onError: () => undefined
 };

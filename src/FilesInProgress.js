@@ -8,18 +8,20 @@ export const FilesInProgress = ({files, height = '48', Icon = () => <i/>}) => {
     const filesArr = files.map(({file, percent, uploadId}) => {
         if (file && imageRegExp.test(file.type)) {
             return (
-                <ListItem key={uploadId}
-                          leftAvatar={<FileImage file={file} height={height} />}
-                          primaryText={file.name||'File'}
-                          secondaryText={percent && <LinearProgress mode="determinate" value={percent} />}
+                <ListItem
+                    key={uploadId}
+                    leftAvatar={<FileImage file={file} height={height}/>}
+                    primaryText={file.name || 'File'}
+                    secondaryText={percent && <LinearProgress mode="determinate" value={percent} />}
                 />
             );
         }
         return (
-            <ListItem key={uploadId}
-                      leftAvatar={<Icon type={file.type} name={file.name}/>}
-                      primaryText={file.name||'File'}
-                      secondaryText={percent && <LinearProgress mode="determinate" value={percent} />}
+            <ListItem
+                key={uploadId}
+                leftAvatar={<Icon type={file.type} name={file.name}/>}
+                primaryText={file.name || 'File'}
+                secondaryText={percent && <LinearProgress mode="determinate" value={percent} />}
             />
         );
     });
